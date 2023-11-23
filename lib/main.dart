@@ -17,7 +17,6 @@ import 'package:gas_accounting/provider/tempinvoice_provider.dart';
 import 'package:gas_accounting/provider/theme_provider.dart';
 import 'package:gas_accounting/theme/dark_theme.dart';
 import 'package:gas_accounting/theme/light_theme.dart';
-import 'package:gas_accounting/utill/app_constants.dart';
 import 'package:gas_accounting/utill/color_resources.dart';
 import 'package:provider/provider.dart';
 import 'di_container.dart' as di;
@@ -52,7 +51,7 @@ Future<void> main() async{
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  static final navigatorKey = new GlobalKey<NavigatorState>();
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       builder: EasyLoading.init(),
       title: "Accounting",
-      // title: "Accounting for Plastic",
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).darkTheme ? dark : light,

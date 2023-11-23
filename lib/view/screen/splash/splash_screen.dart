@@ -74,31 +74,21 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
   permissionServiceCall() async {
-    await permissionServices().then(
-          (value) {
+    await permissionServices().then((value) {
             print("permission:::1$value");
-        if (value != null) {
-          if (value[Permission.storage]!.isGranted &&
-              value[Permission.camera]!.isGranted) {
-            print("permission:::2$value");
-            _route();
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => SplashScreen()),
-            // );
-          }
-        }
-      },
+            if (value[Permission.storage]!.isGranted && value[Permission.camera]!.isGranted) {
+              print("permission:::2$value");
+              _route();
+            }
+        },
     );
   }
 
   /*Permission services*/
   Future<Map<Permission, PermissionStatus>> permissionServices() async {
-    // You can request multiple permissions at once.
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
       Permission.camera,
-      //add more permission to request here.
     ].request();
 
     if (statuses[Permission.storage]!.isPermanentlyDenied) {
@@ -108,7 +98,6 @@ class _SplashScreenState extends State<SplashScreen> {
             if (await Permission.storage.status.isPermanentlyDenied == true &&
                 await Permission.storage.status.isGranted == false) {
               openAppSettings();
-              // permissionServiceCall(); /* opens app settings until permission is granted */
             }
           }
         },
@@ -126,21 +115,18 @@ class _SplashScreenState extends State<SplashScreen> {
             if (await Permission.camera.status.isPermanentlyDenied == true &&
                 await Permission.camera.status.isGranted == false) {
               openAppSettings();
-              // permissionServiceCall(); /* opens app settings until permission is granted */
             }
           }
         },
       );
-      //openAppSettings();
-      //setState(() {});
     } else {
       if (statuses[Permission.camera]!.isDenied) {
         permissionServiceCall();
       }
     }
-    /*{Permission.camera: PermissionStatus.granted, Permission.storage: PermissionStatus.granted}*/
     return statuses;
   }
+
   void _route() {
     Provider.of<SplashProvider>(context, listen: false).initSharedPrefData();
     Timer(const Duration(seconds: 2), () {
