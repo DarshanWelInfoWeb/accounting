@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,13 +27,14 @@ import 'view/screen/splash/splash_screen.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => di.sl<SplashProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<ThemeProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<OTPProvider>()),
-      ChangeNotifierProvider(create: (context) => di.sl<AuthProvider>()),
+      ChangeNotifierProvider(create: (context) => di.sl<AuthenticationProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<DashboardProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<CustomerProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<RouteProvider>()),
@@ -43,14 +46,15 @@ Future<void> main() async{
       ChangeNotifierProvider(create: (context) => di.sl<InvoiceProvider>()),
       ChangeNotifierProvider(create: (context) => di.sl<SupplierProvider>()),
     ],
-    child: const MyApp(),
+    child: MyApp(),
     // builder: EasyLoading.init(),
   ));
 }
 
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   @override

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_accounting/data/model/body/login_body.dart';
 import 'package:gas_accounting/helper/preferenceutils.dart';
@@ -13,7 +16,9 @@ import 'package:gas_accounting/view/basewidget/custom_textfield.dart';
 import 'package:gas_accounting/view/screen/auth/forgot_password.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:gas_accounting/view/screen/dashboard/dashboard_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../../basewidget/custom_password_textfield.dart';
 
@@ -100,7 +105,7 @@ class _LoginState extends State<Login> {
     }else{
       loginBody.email = nameController.text;
       loginBody.password = passwordController.text;
-      Provider.of<AuthProvider>(context, listen: false).login(loginBody,route);
+      Provider.of<AuthenticationProvider>(context, listen: false).login(loginBody,route);
       AppConstants.closeKeyboard();
     }
   }
@@ -127,30 +132,30 @@ class _LoginState extends State<Login> {
 
   bool isLoggedIn = false;
 
-  void onLoginStatusChanged(bool isLoggedIn) {
+  void onLoginStatusChanged(bool isLoggedIn, {required profileData}) {
     setState(() {
       this.isLoggedIn = isLoggedIn;
     });
   }
 
-  void initiateFacebookLogin() async {
-    var facebookLogin = FacebookLogin();
-    var facebookLoginResult = await facebookLogin.expressLogin();
-    switch (facebookLoginResult.status) {
-      case FacebookLoginStatus.error:
-        print("Error");
-        onLoginStatusChanged(false);
-        break;
-      case FacebookLoginStatus.cancel:
-        print("CancelledByUser");
-        onLoginStatusChanged(false);
-        break;
-      case FacebookLoginStatus.success:
-        print("LoggedIn");
-        onLoginStatusChanged(true);
-        break;
-    }
-  }
+  // void initiateFacebookLogin() async {
+  //   var facebookLogin = FacebookLogin();
+  //   var facebookLoginResult = await facebookLogin.expressLogin();
+  //   switch (facebookLoginResult.status) {
+  //     case FacebookLoginStatus.error:
+  //       print("Error");
+  //       onLoginStatusChanged(false);
+  //       break;
+  //     case FacebookLoginStatus.cancel:
+  //       print("CancelledByUser");
+  //       onLoginStatusChanged(false);
+  //       break;
+  //     case FacebookLoginStatus.success:
+  //       print("LoggedIn");
+  //       onLoginStatusChanged(true);
+  //       break;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +225,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Provider.of<AuthProvider>(context).isLoading
+                        Provider.of<AuthenticationProvider>(context).isLoading
                             ? Center(
                           child: CircularProgressIndicator(
                             color: ColorResources.LINE_BG,
@@ -262,7 +267,7 @@ class _LoginState extends State<Login> {
                           ),
                           child: TextButton(
                             onPressed: () {
-
+                              signInWithGoogle();
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -284,4 +289,74 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final User? user = userCredential.user;
+      print("log :: ${user!.email}");
+      print("log :: ${user.displayName}");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
+      // route;
+      // Use the user object for further operations or navigate to a new screen.
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // bool isLoggedIn = false;
+  var profileData;
+
+  var facebookLogin = FacebookLogin();
+
+  // void onLoginStatusChanged(bool isLoggedIn, {profileData}) {
+  //   setState(() {
+  //     this.isLoggedIn = isLoggedIn;
+  //     this.profileData = profileData;
+  //   });
+  // }
+
+
+  void loginButtonClicked() async {
+    var facebookLoginResult = await facebookLogin.logIn();
+    print("to :: ");
+    switch (facebookLoginResult.status) {
+      case FacebookLoginStatus.error:
+        print("error :: ");
+        onLoginStatusChanged(false, profileData: profileData);
+        break;
+      case FacebookLoginStatus.cancel:
+        print("cancel :: ");
+        onLoginStatusChanged(false, profileData: profileData);
+        break;
+      case FacebookLoginStatus.success:
+        print("success :: ");
+        var graphResponse = await http.get(
+            Uri.parse('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${facebookLoginResult
+                .accessToken?.token}'));
+
+        var profile = json.decode(graphResponse.body);
+        print("login :: ${profile.toString()}");
+
+        onLoginStatusChanged(true, profileData: profile);
+        break;
+      case FacebookLoginStatus.success:
+        // TODO: Handle this case.
+        break;
+      case FacebookLoginStatus.cancel:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
 }

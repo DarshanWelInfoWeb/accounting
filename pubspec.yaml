@@ -76,7 +76,6 @@ dependencies:
   data_table_plus: ^0.0.1
   number_to_words_english: ^2.0.2
   month_picker_dialog: ^2.0.2
-  flutter_login_facebook: ^1.8.0
   qr_code_scanner: ^1.0.1
   dropdown_button2: ^2.3.8
   dropdown_textfield: ^1.0.8
@@ -86,6 +85,8 @@ dependencies:
   firebase_core: ^2.15.1
   firebase_auth: ^4.8.0
   google_sign_in: ^6.1.4
+  flutter_facebook_auth: ^5.0.11
+  flutter_login_facebook: ^1.9.0
   autocomplete_textfield: ^2.0.1
   lazy_loading_list: ^1.0.1
   flutter_slidable: ^3.0.0
@@ -93,6 +94,7 @@ dependencies:
   charts_painter: ^3.1.1
   sliver_bar_chart: ^0.0.1
   focus_detector: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:

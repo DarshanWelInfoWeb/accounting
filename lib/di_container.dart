@@ -54,7 +54,7 @@ Future<void> init() async {
   sl.registerFactory(() => ThemeProvider(sharedPreferences: sl()));
   sl.registerFactory(() => SplashProvider(splashRepo: sl()));
   sl.registerFactory(() => OTPProvider());
-  sl.registerFactory(() => AuthProvider(authRepo: sl()));
+  sl.registerFactory(() => AuthenticationProvider(authRepo: sl()));
   sl.registerFactory(() => DashboardProvider(dashboardRepo: sl()));
   sl.registerFactory(() => CustomerProvider(customerRepo: sl()));
   sl.registerFactory(() => RouteProvider(routeRepo: sl()));

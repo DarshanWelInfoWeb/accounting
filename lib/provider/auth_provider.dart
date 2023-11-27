@@ -6,9 +6,9 @@ import 'package:gas_accounting/data/repository/auth_repo.dart';
 import 'package:gas_accounting/helper/preferenceutils.dart';
 import 'package:gas_accounting/utill/app_constants.dart';
 
-class AuthProvider with ChangeNotifier {
+class AuthenticationProvider with ChangeNotifier {
   final AuthRepo? authRepo;
-  AuthProvider({@required this.authRepo});
+  AuthenticationProvider({@required this.authRepo});
   String? _sucess="true";
   bool? _Vendor_status;
   bool _isLoading = false;
