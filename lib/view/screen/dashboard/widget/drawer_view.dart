@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:gas_accounting/helper/preferenceutils.dart';
 import 'package:gas_accounting/utill/app_constants.dart';
 import 'package:gas_accounting/utill/color_resources.dart';
@@ -33,6 +34,7 @@ import 'package:gas_accounting/view/screen/supplier/supplier_invoice/supplier_in
 import 'package:gas_accounting/view/screen/supplier/supplier_payment/supplier_payment_list.dart';
 import 'package:gas_accounting/view/screen/temp_invoice/tempinvoice_list.dart';
 import 'package:gas_accounting/view/screen/unit_management/unit_manage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Drawer_View extends StatefulWidget {
   const Drawer_View({Key? key}) : super(key: key);
@@ -1391,7 +1393,8 @@ class _Drawer_ViewState extends State<Drawer_View> with TickerProviderStateMixin
       ),
     );
   }
-
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final FacebookLogin facebookSignIn = FacebookLogin();
   Future<bool> onLogoutPop(BuildContext context) {
     return showDialog<bool>(
         builder: (BuildContext context) {
@@ -1401,6 +1404,8 @@ class _Drawer_ViewState extends State<Drawer_View> with TickerProviderStateMixin
               rightButtonText: "Yes",
               onAgreeTap: () {
                 PreferenceUtils.clear();
+                googleSignIn.signOut();
+                facebookSignIn.logOut();
                 PreferenceUtils.setlogin(AppConstants.isLoggedIn, false);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Login(),));
               });

@@ -104,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     } else {
       if (statuses[Permission.storage]!.isDenied) {
-        // permissionServiceCall();
+        permissionServiceCall();
       }
     }
 
@@ -121,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     } else {
       if (statuses[Permission.camera]!.isDenied) {
-        // permissionServiceCall();
+        permissionServiceCall();
       }
     }
     return statuses;

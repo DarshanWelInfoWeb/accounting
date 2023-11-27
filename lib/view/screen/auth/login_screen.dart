@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_accounting/data/model/body/login_body.dart';
@@ -18,7 +16,6 @@ import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:gas_accounting/view/screen/dashboard/dashboard_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 import '../../basewidget/custom_password_textfield.dart';
 
@@ -130,33 +127,6 @@ class _LoginState extends State<Login> {
     }
   }
 
-  bool isLoggedIn = false;
-
-  void onLoginStatusChanged(bool isLoggedIn, {required profileData}) {
-    setState(() {
-      this.isLoggedIn = isLoggedIn;
-    });
-  }
-
-  // void initiateFacebookLogin() async {
-  //   var facebookLogin = FacebookLogin();
-  //   var facebookLoginResult = await facebookLogin.expressLogin();
-  //   switch (facebookLoginResult.status) {
-  //     case FacebookLoginStatus.error:
-  //       print("Error");
-  //       onLoginStatusChanged(false);
-  //       break;
-  //     case FacebookLoginStatus.cancel:
-  //       print("CancelledByUser");
-  //       onLoginStatusChanged(false);
-  //       break;
-  //     case FacebookLoginStatus.success:
-  //       print("LoggedIn");
-  //       onLoginStatusChanged(true);
-  //       break;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -226,7 +196,7 @@ class _LoginState extends State<Login> {
                         ),
                         const SizedBox(height: 20),
                         Provider.of<AuthenticationProvider>(context).isLoading
-                            ? Center(
+                            ? const Center(
                           child: CircularProgressIndicator(
                             color: ColorResources.LINE_BG,
                           ),
@@ -238,7 +208,7 @@ class _LoginState extends State<Login> {
                         _divider(),
                         isLoggedIn
                             ?
-                        Center(child: CircularProgressIndicator(color: ColorResources.LINE_BG,))
+                        const Center(child: CircularProgressIndicator(color: ColorResources.LINE_BG,))
                             :
                         Container(
                           height: 40,
@@ -247,7 +217,7 @@ class _LoginState extends State<Login> {
                             color: const Color(0xff3A5897),
                             borderRadius: BorderRadius.circular(50),),
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: _facebookLogin,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -257,6 +227,10 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
+                        isLogin
+                            ?
+                        const Center(child: CircularProgressIndicator(color: ColorResources.LINE_BG,))
+                            :
                         Container(
                           height: 40,
                           margin: const EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
@@ -266,9 +240,7 @@ class _LoginState extends State<Login> {
                               border: Border.all(color: ColorResources.COLORPRIMERY,width: 1)
                           ),
                           child: TextButton(
-                            onPressed: () {
-                              signInWithGoogle();
-                            },
+                            onPressed: signInWithGoogle,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -289,10 +261,13 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
+  /* Gmail Login */
+  bool isLogin = false;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-
   Future<void> signInWithGoogle() async {
+    setState(() {
+      isLogin = true;
+    });
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
@@ -306,57 +281,68 @@ class _LoginState extends State<Login> {
       final User? user = userCredential.user;
       print("log :: ${user!.email}");
       print("log :: ${user.displayName}");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
       // route;
       // Use the user object for further operations or navigate to a new screen.
     } catch (e) {
       print(e.toString());
     }
+    setState(() {
+      isLogin = false;
+    });
   }
 
-  // bool isLoggedIn = false;
-  var profileData;
+  /* Facebook Login */
 
-  var facebookLogin = FacebookLogin();
+  bool isLoggedIn = false;
 
-  // void onLoginStatusChanged(bool isLoggedIn, {profileData}) {
-  //   setState(() {
-  //     this.isLoggedIn = isLoggedIn;
-  //     this.profileData = profileData;
-  //   });
-  // }
+  void onLoginStatusChanged(bool isLoggedIn) {
+    setState(() {
+      this.isLoggedIn = isLoggedIn;
+    });
+  }
 
-
-  void loginButtonClicked() async {
-    var facebookLoginResult = await facebookLogin.logIn();
-    print("to :: ");
-    switch (facebookLoginResult.status) {
+  static final FacebookLogin facebookSignIn = FacebookLogin();
+  String _message = 'Log in/out by pressing the buttons below.';
+  void _showMessage(String message) {
+    setState(() {
+      _message = message;
+    });
+  }
+  Future<void> _facebookLogin() async {
+    print("object :: 0 ::");
+    setState(() {
+      isLoggedIn = true;
+    });
+    final FacebookLoginResult result = await facebookSignIn.logIn();
+    print("object :: 1 ::");
+    switch (result.status) {
+      case FacebookLoginStatus.success:
+        final FacebookAccessToken? accessToken = result.accessToken;
+        AppConstants.getToast("Logged in!");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
+        // _showMessage('''
+        //  Logged in!
+        //  Token: ${accessToken?.token}
+        //  User id: ${accessToken?.userId}
+        //  Expires: ${accessToken?.expires}
+        //  Permissions: ${accessToken?.permissions}
+        //  Declined permissions: ${accessToken?.declinedPermissions}
+        //  ''');
+        break;
+      case FacebookLoginStatus.cancel:
+        AppConstants.getToast("Login cancelled by the user.");
+        // _showMessage('Login cancelled by the user.');
+        break;
       case FacebookLoginStatus.error:
-        print("error :: ");
-        onLoginStatusChanged(false, profileData: profileData);
-        break;
-      case FacebookLoginStatus.cancel:
-        print("cancel :: ");
-        onLoginStatusChanged(false, profileData: profileData);
-        break;
-      case FacebookLoginStatus.success:
-        print("success :: ");
-        var graphResponse = await http.get(
-            Uri.parse('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${facebookLoginResult
-                .accessToken?.token}'));
-
-        var profile = json.decode(graphResponse.body);
-        print("login :: ${profile.toString()}");
-
-        onLoginStatusChanged(true, profileData: profile);
-        break;
-      case FacebookLoginStatus.success:
-        // TODO: Handle this case.
-        break;
-      case FacebookLoginStatus.cancel:
-        // TODO: Handle this case.
+        AppConstants.getToast("Something went wrong with the login process.\nHere's the error Facebook gave us: ${result.error}");
+        // _showMessage('Something went wrong with the login process.\n'
+        //     'Here\'s the error Facebook gave us: ${result.error}');
         break;
     }
+    setState(() {
+      isLoggedIn = false;
+    });
   }
 
 }
