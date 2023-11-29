@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Accounting</string>
-    <string name="facebook_app_id">651977840474890</string>
-    <string name="fb_login_protocol_scheme">fb651977840474890</string>
-    <string name="facebook_client_token">4041d6010ebf856f99aafae71de43d0b</string>
+    <string name="facebook_app_id">741892027956547</string>
+    <string name="fb_login_protocol_scheme">fb741892027956547</string>
+    <string name="facebook_client_token">d38c0abf6f05881003b21276c1b70b35</string>
 </resources>

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_accounting/data/model/body/login_body.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:gas_accounting/view/screen/dashboard/dashboard_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../../basewidget/custom_password_textfield.dart';
 
@@ -37,22 +40,12 @@ class _LoginState extends State<Login> {
     return RichText(
       textAlign: TextAlign.center,
       text: const TextSpan(
-          text: 'Lo',
+          text: 'Login',
           style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w700,
               color: ColorResources.RED
-          ),
-          children: [
-            TextSpan(
-              text: 'g',
-              style: TextStyle(color: ColorResources.RED, fontSize: 30),
-            ),
-            TextSpan(
-              text: 'in',
-              style: TextStyle(color: ColorResources.RED, fontSize: 30),
-            ),
-          ]),
+          )),
     );
   }
 
@@ -118,7 +111,7 @@ class _LoginState extends State<Login> {
         print("object:::1:0: $msg::::$errorMessage");
         errorMessage == null?print("object:::Home::"):print("object::Dash::");
         PreferenceUtils.setlogin(AppConstants.isLoggedIn, true);
-        errorMessage == null?AppConstants.getToast("This Email Id is not Found"):AppConstants.getToast("Login Successfull");
+        errorMessage == null?AppConstants.getToast("This Email Id is not Found"):AppConstants.getToast("Login Successfully");
         Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
       }
     } else{
@@ -196,11 +189,8 @@ class _LoginState extends State<Login> {
                         ),
                         const SizedBox(height: 20),
                         Provider.of<AuthenticationProvider>(context).isLoading
-                            ? const Center(
-                          child: CircularProgressIndicator(
-                            color: ColorResources.LINE_BG,
-                          ),
-                        )
+                            ?
+                        const Center(child: CircularProgressIndicator(color: ColorResources.LINE_BG,))
                             :
                         CustomButtonFuction(
                             onTap: () => _login(),
@@ -261,12 +251,15 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
   /* Gmail Login */
   bool isLogin = false;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+
   Future<void> signInWithGoogle() async {
     setState(() {
       isLogin = true;
+      googleSignIn.signOut();
     });
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -281,6 +274,7 @@ class _LoginState extends State<Login> {
       final User? user = userCredential.user;
       print("log :: ${user!.email}");
       print("log :: ${user.displayName}");
+      AppConstants.getToast("Login Successfully");
       // Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
       // route;
       // Use the user object for further operations or navigate to a new screen.
@@ -293,51 +287,58 @@ class _LoginState extends State<Login> {
   }
 
   /* Facebook Login */
-
   bool isLoggedIn = false;
+  var profileData;
 
-  void onLoginStatusChanged(bool isLoggedIn) {
+  void onLoginStatusChanged(bool isLoggedIn,profileData) {
     setState(() {
       this.isLoggedIn = isLoggedIn;
+      this.profileData = profileData;
     });
   }
 
   static final FacebookLogin facebookSignIn = FacebookLogin();
+  FacebookUserProfile? facebookUser;
   String _message = 'Log in/out by pressing the buttons below.';
+
   void _showMessage(String message) {
     setState(() {
       _message = message;
     });
   }
+
   Future<void> _facebookLogin() async {
     print("object :: 0 ::");
     setState(() {
       isLoggedIn = true;
+      facebookSignIn.logOut();
     });
     final FacebookLoginResult result = await facebookSignIn.logIn();
     print("object :: 1 ::");
     switch (result.status) {
       case FacebookLoginStatus.success:
         final FacebookAccessToken? accessToken = result.accessToken;
-        AppConstants.getToast("Logged in!");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
-        // _showMessage('''
-        //  Logged in!
-        //  Token: ${accessToken?.token}
-        //  User id: ${accessToken?.userId}
-        //  Expires: ${accessToken?.expires}
-        //  Permissions: ${accessToken?.permissions}
-        //  Declined permissions: ${accessToken?.declinedPermissions}
-        //  ''');
+        var url = Uri.parse("https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${result.accessToken!.token}");
+        var graphResponse = await http.get(url);
+
+        var profile = json.decode(graphResponse.body);
+        print("login :: ::${profile.toString()}");
+
+        onLoginStatusChanged(true,profile);
+        AppConstants.getToast("Login Successfully");
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(""),));
+        print("login :: ${accessToken?.userId}");
+        print("login :: ${accessToken?.permissions}");
+        print("login :: ${accessToken?.declinedPermissions}");
+        print("login :: ${accessToken?.expires}");
+        print("login :: ${accessToken?.token}");
+        print("login user :: ${profileData['picture']['data']['url']}");
         break;
       case FacebookLoginStatus.cancel:
         AppConstants.getToast("Login cancelled by the user.");
-        // _showMessage('Login cancelled by the user.');
         break;
       case FacebookLoginStatus.error:
         AppConstants.getToast("Something went wrong with the login process.\nHere's the error Facebook gave us: ${result.error}");
-        // _showMessage('Something went wrong with the login process.\n'
-        //     'Here\'s the error Facebook gave us: ${result.error}');
         break;
     }
     setState(() {
