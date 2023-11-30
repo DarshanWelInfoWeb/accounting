@@ -827,6 +827,7 @@ class _LineChartWidgetState extends State<_LineChartWidget> {
               labelRotation: -30,
               maximumLabels: 100,
               autoScrollingDelta: 7,
+              autoScrollingMode: widget.type != "Dashboard" ? AutoScrollingMode.end :AutoScrollingMode.start,
               title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
               majorGridLines: const MajorGridLines(width: 0),
               majorTickLines: const MajorTickLines(width: 1),
@@ -941,9 +942,11 @@ class _BarChartWidgetState extends State<_BarChartWidget> {
               labelRotation: -30,
               maximumLabels: 31,
               autoScrollingDelta: 7,
+
+              autoScrollingMode: widget.type != "Dashboard" ? AutoScrollingMode.end :AutoScrollingMode.start,
               title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
               majorGridLines: const MajorGridLines(width: 0),
-              majorTickLines: const MajorTickLines(width: 0),
+              majorTickLines: const MajorTickLines(width: 1),
             ),
             primaryYAxis: NumericAxis(
                 numberFormat: NumberFormat(),

@@ -181,6 +181,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       padding: EdgeInsets.only(top: AppConstants.itemHeight*0.10),
                       child: CustomButtonFuction(
                           onTap: (){
+                            Provider.of<OTPProvider>(context, listen: false).setStopTime();
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const NewPassword(),));
                           },
                           buttonText: "Continue"),

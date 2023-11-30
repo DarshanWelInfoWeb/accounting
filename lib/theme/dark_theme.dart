@@ -5,10 +5,10 @@ ThemeData dark = ThemeData(
   fontFamily: 'Montserrat',
   primaryColor: ColorResources.LINE_BG,
   brightness: Brightness.dark,
-  bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
-  highlightColor: Color(0xFF252525),
-  hintColor: Color(0xFFc7c7c7),
-  pageTransitionsTheme: PageTransitionsTheme(builders: {
+  bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.transparent),
+  highlightColor: const Color(0xFF252525),
+  hintColor: const Color(0xFFc7c7c7),
+  pageTransitionsTheme: const PageTransitionsTheme(builders: {
     TargetPlatform.android: ZoomPageTransitionsBuilder(),
     TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
     TargetPlatform.fuchsia: ZoomPageTransitionsBuilder(),
