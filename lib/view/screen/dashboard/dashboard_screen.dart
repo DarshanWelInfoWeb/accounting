@@ -393,7 +393,7 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     margin: EdgeInsets.only(left: AppConstants.itemWidth*0.02,top: AppConstants.itemHeight*0.01),
@@ -404,70 +404,25 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: _buildCalendarDialogButton(),
                   ),
+                  InkWell(
+                    onTap: () {
+                      onLineChartTapExpand(context, _LineChartWidget("Dashboard"));
+                    },
+                    child: Container(
+                      height: AppConstants.itemHeight*0.024,
+                      width: AppConstants.itemWidth*0.15,
+                      color: Colors.transparent,
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
+                        child: Icon(Icons.zoom_out_map),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppConstants.itemWidth*0.01),
-                child: SfCartesianChart(
-                    enableAxisAnimation: true,
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    legend: Legend(
-                      isVisible: true,
-                      position: LegendPosition.bottom,
-                      orientation: LegendItemOrientation.horizontal,
-                      textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 16),
-                    ),
-                    primaryXAxis: CategoryAxis(
-                      labelStyle: montserratRegular.copyWith(fontSize: 10,color: ColorResources.BLACK),
-                      labelRotation: -30,
-                      maximumLabels: 100,
-                      autoScrollingDelta: 7,
-                      title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
-                      majorGridLines: const MajorGridLines(width: 0),
-                      majorTickLines: const MajorTickLines(width: 1),
-                    ),
-                    primaryYAxis: NumericAxis(
-                        numberFormat: NumberFormat(),
-                        minimum: 1.0,
-                        title: AxisTitle(text: "Amount \u20b9",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
-                        majorGridLines: const MajorGridLines(width: 1)),
-                    zoomPanBehavior: ZoomPanBehavior(
-                      enablePanning: true,
-                    ),
-                    series: <ChartSeries>[
-                      LineSeries<SalesChartData, String>(
-                          enableTooltip: true,
-                          name: "Sale",
-                          color: Colors.blue,
-                          markerSettings: const MarkerSettings(
-                              isVisible: true,
-                              height: 4,
-                              width: 4,
-                              shape: DataMarkerType.circle,
-                              borderWidth: 3,
-                              borderColor: Colors.blue),
-                          dataSource: dashboard.salesChartList,
-                          xValueMapper: (SalesChartData data, _) => AppConstants.date_chang(data.dtDate!),
-                          yValueMapper: (SalesChartData data, _) => data.intTotalSale!.round(),
-                          pointColorMapper: (SalesChartData data, _) => Colors.blue,
-                      ),
-                      LineSeries<SalesChartData, String>(
-                          enableTooltip: true,
-                          name: "Average Sale",
-                          color: Colors.indigoAccent,
-                          markerSettings: const MarkerSettings(
-                              isVisible: true,
-                              height: 4,
-                              width: 4,
-                              shape: DataMarkerType.rectangle,
-                              borderWidth: 3,
-                              borderColor: Colors.indigoAccent),
-                          dataSource: dashboard.salesChartList,
-                          xValueMapper: (SalesChartData data, _) => AppConstants.date_chang(data.dtDate!),
-                          yValueMapper: (SalesChartData data, _) => data.intAverageSale!.round(),
-                          pointColorMapper: (SalesChartData data, _) => Colors.indigoAccent,
-                      ),
-                    ]),
+                padding: const EdgeInsets.all(5),
+                child: SizedBox(height: AppConstants.itemHeight * 0.40, child: _LineChartWidget("Full")),
               ),
               /* Bar Chart*/
               Row(
@@ -480,210 +435,180 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ],
               ),
-              Container(
-                margin: EdgeInsets.only(left: AppConstants.itemWidth*0.02,right: AppConstants.itemWidth*0.42),
-                padding: EdgeInsets.symmetric(horizontal: AppConstants.itemWidth*0.02,vertical: AppConstants.itemHeight*0.005),
-                decoration: BoxDecoration(
-                  color: ColorResources.GREY.withOpacity(0.05),
-                  borderRadius:BorderRadius.circular(10),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownMenu(
-                    initialSelection: 0,
-                    menuStyle: MenuStyle(
-                        elevation: const MaterialStatePropertyAll(1),
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: AppConstants.itemWidth*0.54,
+                    margin: EdgeInsets.only(left: AppConstants.itemWidth*0.02),
+                    padding: EdgeInsets.symmetric(horizontal: AppConstants.itemWidth*0.02,vertical: AppConstants.itemHeight*0.005),
+                    decoration: BoxDecoration(
+                      color: ColorResources.GREY.withOpacity(0.05),
+                      borderRadius:BorderRadius.circular(10),
                     ),
-                    onSelected: (value) {
-                      if(value == 0){
-                        Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),last7StartDay,last7endDay).then((value) {
-                          setState(() {
-                            is_loading = false;
-                            sale = 0.0;
-                            due = 0.0;
-                            payment = 0.0;
-                            for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
-                              var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
-                              due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
-                              payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
-                              for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
-                                if (element.intTotalSale! > maX.intTotalSale!) maX = element;
-                                if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
-                              }
-                              maxy = maX.intTotalSale;
-                              maxyPayment = maxPayment.intTotalPayment;
-                              maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
-                              print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
-                            }
-                          });
-                        });
-                      }else if(value == 1){
-                        Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),thisWeekStart,thisWeekEnd).then((value) {
-                          setState(() {
-                            is_loading = false;
-                            sale = 0.0;
-                            due = 0.0;
-                            payment = 0.0;
-                            for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
-                              var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
-                              due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
-                              payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
-                              for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
-                                if (element.intTotalSale! > maX.intTotalSale!) maX = element;
-                                if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
-                              }
-                              maxy = maX.intTotalSale;
-                              maxyPayment = maxPayment.intTotalPayment;
-                              maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
-                              print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
-                            }
-                          });
-                        });
-                      }else if(value == 2){
-                        Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),startDMY,endDMY).then((value){
-                          setState(() {
-                            is_loading = false;
-                            sale = 0.0;
-                            due = 0.0;
-                            payment = 0.0;
-                            for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
-                              var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
-                              due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
-                              payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
-                              for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
-                                if (element.intTotalSale! > maX.intTotalSale!) maX = element;
-                                if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
-                              }
-                              maxy = maX.intTotalSale;
-                              maxyPayment = maxPayment.intTotalPayment;
-                              maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
-                              print("The value of max= ${max(maX.intTotalSale!.round(), maxPayment.intTotalPayment!.round())}");
-                              print("maxY ::${maxy > maxyPayment}");
-                              print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
-                            }
-                          });
-                        });
-                      }else if(value == 3){
-                        Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),lastWeekStart,lastWeekEnd).then((value) {
-                          setState(() {
-                            is_loading = false;
-                            sale = 0.0;
-                            due = 0.0;
-                            payment = 0.0;
-                            for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
-                              var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
-                              due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
-                              payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
-                              for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
-                                if (element.intTotalSale! > maX.intTotalSale!) maX = element;
-                                if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
-                              }
-                              maxy = maX.intTotalSale;
-                              maxyPayment = maxPayment.intTotalPayment;
-                              maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
-                              print("max ::${maX.intTotalSale!.round()} :: $maxy ::$maxyPayment");
-                            }
-                          });
-                        });
-                      }else{
-                        Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),lastMonthStart,lastMonthEnd).then((value){
-                          setState(() {
-                            is_loading = false;
-                            sale = 0.0;
-                            due = 0.0;
-                            payment = 0.0;
-                            for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
-                              var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
-                              sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
-                              due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
-                              payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
-                              for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
-                                if (element.intTotalSale! > maX.intTotalSale!) maX = element;
-                                if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
-                              }
-                              maxy = maX.intTotalSale;
-                              maxyPayment = maxPayment.intTotalPayment;
-                              maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
-                              print("The value of max(10, 0) = ${max(maX.intTotalSale!.round(), maxPayment.intTotalPayment!.round())}");
-                              print("max ::$maxY :: $maxy ::$maxyPayment");
-                            }
-                          });
-                        });
-                      }
-                    },
-                    dropdownMenuEntries: const [
-                      DropdownMenuEntry(value: 0, label: 'Last Seven Day'),
-                      DropdownMenuEntry(value: 1, label: 'This Week'),
-                      DropdownMenuEntry(value: 2, label: 'This Month'),
-                      DropdownMenuEntry(value: 3, label: 'Last Week'),
-                      DropdownMenuEntry(value: 4, label: 'Last Month'),
-                    ],
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownMenu(
+                        initialSelection: 0,
+                        width: AppConstants.itemWidth*0.50,
+                        menuStyle: MenuStyle(
+                            elevation: const MaterialStatePropertyAll(1),
+                            shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
+                        ),
+                        onSelected: (value) {
+                          if(value == 0){
+                            Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),last7StartDay,last7endDay).then((value) {
+                              setState(() {
+                                is_loading = false;
+                                sale = 0.0;
+                                due = 0.0;
+                                payment = 0.0;
+                                for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
+                                  var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
+                                  due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
+                                  payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
+                                  for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
+                                    if (element.intTotalSale! > maX.intTotalSale!) maX = element;
+                                    if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
+                                  }
+                                  maxy = maX.intTotalSale;
+                                  maxyPayment = maxPayment.intTotalPayment;
+                                  maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
+                                  print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
+                                }
+                              });
+                            });
+                          }else if(value == 1){
+                            Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),thisWeekStart,thisWeekEnd).then((value) {
+                              setState(() {
+                                is_loading = false;
+                                sale = 0.0;
+                                due = 0.0;
+                                payment = 0.0;
+                                for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
+                                  var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
+                                  due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
+                                  payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
+                                  for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
+                                    if (element.intTotalSale! > maX.intTotalSale!) maX = element;
+                                    if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
+                                  }
+                                  maxy = maX.intTotalSale;
+                                  maxyPayment = maxPayment.intTotalPayment;
+                                  maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
+                                  print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
+                                }
+                              });
+                            });
+                          }else if(value == 2){
+                            Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),startDMY,endDMY).then((value){
+                              setState(() {
+                                is_loading = false;
+                                sale = 0.0;
+                                due = 0.0;
+                                payment = 0.0;
+                                for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
+                                  var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
+                                  due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
+                                  payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
+                                  for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
+                                    if (element.intTotalSale! > maX.intTotalSale!) maX = element;
+                                    if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
+                                  }
+                                  maxy = maX.intTotalSale;
+                                  maxyPayment = maxPayment.intTotalPayment;
+                                  maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
+                                  print("The value of max= ${max(maX.intTotalSale!.round(), maxPayment.intTotalPayment!.round())}");
+                                  print("maxY ::${maxy > maxyPayment}");
+                                  print("max ::${maX.intTotalSale!.round()} :: $maxy  ::$maxyPayment");
+                                }
+                              });
+                            });
+                          }else if(value == 3){
+                            Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),lastWeekStart,lastWeekEnd).then((value) {
+                              setState(() {
+                                is_loading = false;
+                                sale = 0.0;
+                                due = 0.0;
+                                payment = 0.0;
+                                for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
+                                  var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
+                                  due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
+                                  payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
+                                  for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
+                                    if (element.intTotalSale! > maX.intTotalSale!) maX = element;
+                                    if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
+                                  }
+                                  maxy = maX.intTotalSale;
+                                  maxyPayment = maxPayment.intTotalPayment;
+                                  maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
+                                  print("max ::${maX.intTotalSale!.round()} :: $maxy ::$maxyPayment");
+                                }
+                              });
+                            });
+                          }else{
+                            Provider.of<DashboardProvider>(context, listen: false).getSalesPaymentChart(context,PreferenceUtils.getString("${AppConstants.companyId}"),lastMonthStart,lastMonthEnd).then((value){
+                              setState(() {
+                                is_loading = false;
+                                sale = 0.0;
+                                due = 0.0;
+                                payment = 0.0;
+                                for(int i=0;i<Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList.length;i++){
+                                  var maX = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  var maxPayment = Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[0];
+                                  sale += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalSale!;
+                                  due += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalDue!;
+                                  payment += Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList[i].intTotalPayment!;
+                                  for (var element in Provider.of<DashboardProvider>(context, listen: false).salesPaymentChartList) {
+                                    if (element.intTotalSale! > maX.intTotalSale!) maX = element;
+                                    if (element.intTotalPayment! > maxPayment.intTotalPayment!) maxPayment = element;
+                                  }
+                                  maxy = maX.intTotalSale;
+                                  maxyPayment = maxPayment.intTotalPayment;
+                                  maxY = max(maX.intTotalSale!, maxPayment.intTotalPayment!);
+                                  print("The value of max(10, 0) = ${max(maX.intTotalSale!.round(), maxPayment.intTotalPayment!.round())}");
+                                  print("max ::$maxY :: $maxy ::$maxyPayment");
+                                }
+                              });
+                            });
+                          }
+                        },
+                        dropdownMenuEntries: const [
+                          DropdownMenuEntry(value: 0, label: 'Last Seven Day'),
+                          DropdownMenuEntry(value: 1, label: 'This Week'),
+                          DropdownMenuEntry(value: 2, label: 'This Month'),
+                          DropdownMenuEntry(value: 3, label: 'Last Week'),
+                          DropdownMenuEntry(value: 4, label: 'Last Month'),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                  InkWell(
+                    onTap: () {
+                      onBarChartTapExpand(context, _BarChartWidget("Dashboard"));
+                    },
+                    child: Container(
+                      height: AppConstants.itemHeight*0.024,
+                      width: AppConstants.itemWidth*0.15,
+                      color: Colors.transparent,
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
+                        child: Icon(Icons.zoom_out_map),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppConstants.itemWidth*0.01),
-                child: SfCartesianChart(
-                    enableAxisAnimation: true,
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    legend: Legend(
-                      isVisible: true,
-                      position: LegendPosition.bottom,
-                      orientation: LegendItemOrientation.horizontal,
-                      textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 16),
-                    ),
-                    primaryXAxis: CategoryAxis(
-                      labelStyle: montserratRegular.copyWith(fontSize: 10,color: ColorResources.BLACK),
-                      labelRotation: -30,
-                      maximumLabels: 31,
-                      autoScrollingDelta: 7,
-                      title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
-                      majorGridLines: const MajorGridLines(width: 0),
-                      majorTickLines: const MajorTickLines(width: 0),
-                    ),
-                    primaryYAxis: NumericAxis(
-                        numberFormat: NumberFormat(),
-                        minimum: 1.0,
-                        title: AxisTitle(text: "Amount \u20b9",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
-                        majorGridLines: const MajorGridLines(width: 1)),
-                    zoomPanBehavior: ZoomPanBehavior(
-                      enablePanning: true,
-                    ),
-                    series: <ChartSeries>[
-                      ColumnSeries<SalesPaymentChartData, String>(
-                          enableTooltip: true,
-                          name: "Sales",
-                          color: Colors.blue,
-                          dataSource: dashboard.salesPaymentChartList,
-                          xValueMapper: (SalesPaymentChartData data, _) => data.dtDate,
-                          yValueMapper: (SalesPaymentChartData data, _) => data.intTotalSale,
-                          pointColorMapper: (SalesPaymentChartData data, _) => Colors.blue,
-                          dataLabelSettings: const DataLabelSettings(isVisible: false,angle: -50),
-                          borderRadius: const BorderRadius.only(topRight: Radius.circular(05),topLeft: Radius.circular(05)),
-                          emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average)
-                      ),
-                      ColumnSeries<SalesPaymentChartData, String>(
-                          enableTooltip: true,
-                          name: "Payment",
-                          color: Colors.indigoAccent,
-                          dataSource: dashboard.salesPaymentChartList,
-                          xValueMapper: (SalesPaymentChartData data, _) => data.dtDate,
-                          yValueMapper: (SalesPaymentChartData data, _) => data.intTotalPayment,
-                          pointColorMapper: (SalesPaymentChartData data, _) => Colors.indigoAccent,
-                          dataLabelSettings: const DataLabelSettings(isVisible: false,angle: -50),
-                          borderRadius: const BorderRadius.only(topRight: Radius.circular(05),topLeft: Radius.circular(05)),
-                          emptyPointSettings: EmptyPointSettings(
-                              mode: EmptyPointMode.average)),
-                    ]),
+                padding: const EdgeInsets.all(5),
+                child: SizedBox(height: AppConstants.itemHeight * 0.40, child: _BarChartWidget("Full")),
               ),
               /* Pie Chart*/
               sale == 0.0 && due == 0.0 && payment == 0.0 ? const SizedBox() :
@@ -693,6 +618,24 @@ class _DashboardState extends State<Dashboard> {
         );
       },),
     );
+  }
+
+  void onLineChartTapExpand(BuildContext context, Widget sample) {
+    Navigator.push<dynamic>(
+        context,
+        MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => LineChartFullView(
+              sampleWidget: sample,
+            )));
+  }
+
+  void onBarChartTapExpand(BuildContext context, Widget sample) {
+    Navigator.push<dynamic>(
+        context,
+        MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => BartChartFullView(
+              sampleWidget: sample,
+            )));
   }
 
   List<DateTime?> _dialogCalendarPickerValue = [];
@@ -818,3 +761,223 @@ class _DashboardState extends State<Dashboard> {
     return valueText;
   }
 }
+
+
+/* Line Chart */
+
+class LineChartFullView extends StatelessWidget {
+  const LineChartFullView({super.key, this.sampleWidget});
+  final Widget? sampleWidget;
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) =>
+            Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(60.0),
+                  child: AppBar(
+                    backgroundColor: ColorResources.LINE_BG,
+                    centerTitle: true,
+                    title: Text('Sales & Average Sale',style: montserratSemiBold.copyWith(color: ColorResources.WHITE,fontSize: Dimensions.FONT_SIZE_20)),
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back, color: ColorResources.WHITE),
+                    ),
+                  )),
+              body: Container(
+                  decoration: const BoxDecoration(
+                      borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(12)),
+                      color: Colors.white),
+                  child: Container(child: sampleWidget)),
+            ));
+  }
+}
+
+class _LineChartWidget extends StatefulWidget {
+   String type;
+  _LineChartWidget(this.type,{Key? key}) : super(key: key);
+
+  @override
+  _LineChartWidgetState createState() => _LineChartWidgetState();
+}
+
+class _LineChartWidgetState extends State<_LineChartWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DashboardProvider>(builder: (context, dashboard, child) {
+      return Scaffold(
+        body: SfCartesianChart(
+            enableAxisAnimation: true,
+            tooltipBehavior: TooltipBehavior(enable: true),
+            legend: Legend(
+              isVisible: true,
+              position: LegendPosition.bottom,
+              orientation: LegendItemOrientation.horizontal,
+              textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 16),
+            ),
+            primaryXAxis: CategoryAxis(
+              labelStyle: montserratRegular.copyWith(fontSize: 10,color: ColorResources.BLACK),
+              labelRotation: -30,
+              maximumLabels: 100,
+              autoScrollingDelta: 7,
+              title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
+              majorGridLines: const MajorGridLines(width: 0),
+              majorTickLines: const MajorTickLines(width: 1),
+            ),
+            primaryYAxis: NumericAxis(
+                numberFormat: NumberFormat(),
+                minimum: 1.0,
+                title: AxisTitle(text: "Amount \u20b9",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
+                majorGridLines: const MajorGridLines(width: 1)),
+            zoomPanBehavior: ZoomPanBehavior(
+              enablePanning: widget.type != "Dashboard" ? false : true,
+            ),
+            series: <ChartSeries>[
+              LineSeries<SalesChartData, String>(
+                enableTooltip: true,
+                name: "Sale",
+                color: Colors.blue,
+                markerSettings: const MarkerSettings(
+                    isVisible: true,
+                    height: 4,
+                    width: 4,
+                    shape: DataMarkerType.circle,
+                    borderWidth: 3,
+                    borderColor: Colors.blue),
+                dataSource: dashboard.salesChartList,
+                xValueMapper: (SalesChartData data, _) => AppConstants.date_chang(data.dtDate!),
+                yValueMapper: (SalesChartData data, _) => data.intTotalSale!.round(),
+                pointColorMapper: (SalesChartData data, _) => Colors.blue,
+              ),
+              LineSeries<SalesChartData, String>(
+                enableTooltip: true,
+                name: "Average Sale",
+                color: Colors.indigoAccent,
+                markerSettings: const MarkerSettings(
+                    isVisible: true,
+                    height: 4,
+                    width: 4,
+                    shape: DataMarkerType.rectangle,
+                    borderWidth: 3,
+                    borderColor: Colors.indigoAccent),
+                dataSource: dashboard.salesChartList,
+                xValueMapper: (SalesChartData data, _) => AppConstants.date_chang(data.dtDate!),
+                yValueMapper: (SalesChartData data, _) => data.intAverageSale!.round(),
+                pointColorMapper: (SalesChartData data, _) => Colors.indigoAccent,
+              ),
+            ]),);
+    },);
+  }
+}
+
+
+
+/* Bar Chart */
+
+class BartChartFullView extends StatelessWidget {
+  const BartChartFullView({super.key, this.sampleWidget});
+  final Widget? sampleWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) =>
+            Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(60.0),
+                  child: AppBar(
+                    backgroundColor: ColorResources.LINE_BG,
+                    centerTitle: true,
+                    title: Text('Sales Vs Payment',style: montserratSemiBold.copyWith(color: ColorResources.WHITE,fontSize: Dimensions.FONT_SIZE_20)),
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back, color: ColorResources.WHITE),
+                    ),
+                  )),
+              body: Container(
+                  decoration: const BoxDecoration(
+                      borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(12)),
+                      color: Colors.white),
+                  child: Container(child: sampleWidget)),
+            ));
+  }
+}
+
+class _BarChartWidget extends StatefulWidget {
+  String type;
+  _BarChartWidget(this.type,{Key? key}) : super(key: key);
+
+  @override
+  State<_BarChartWidget> createState() => _BarChartWidgetState();
+}
+
+class _BarChartWidgetState extends State<_BarChartWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DashboardProvider>(builder: (context, dashboard, child) {
+      return Scaffold(
+        body: SfCartesianChart(
+            enableAxisAnimation: true,
+            tooltipBehavior: TooltipBehavior(enable: true),
+            legend: Legend(
+              isVisible: true,
+              position: LegendPosition.bottom,
+              orientation: LegendItemOrientation.horizontal,
+              textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 16),
+            ),
+            primaryXAxis: CategoryAxis(
+              labelStyle: montserratRegular.copyWith(fontSize: 10,color: ColorResources.BLACK),
+              labelRotation: -30,
+              maximumLabels: 31,
+              autoScrollingDelta: 7,
+              title: AxisTitle(text: "Date",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
+              majorGridLines: const MajorGridLines(width: 0),
+              majorTickLines: const MajorTickLines(width: 0),
+            ),
+            primaryYAxis: NumericAxis(
+                numberFormat: NumberFormat(),
+                minimum: 1.0,
+                title: AxisTitle(text: "Amount \u20b9",textStyle: montserratRegular.copyWith(color: ColorResources.BLACK,fontSize: 12)),
+                majorGridLines: const MajorGridLines(width: 1)),
+            zoomPanBehavior: ZoomPanBehavior(
+              enablePanning: widget.type != "Dashboard" ? false : true,
+            ),
+            series: <ChartSeries>[
+              ColumnSeries<SalesPaymentChartData, String>(
+                  enableTooltip: true,
+                  name: "Sales",
+                  color: Colors.blue,
+                  dataSource: dashboard.salesPaymentChartList,
+                  xValueMapper: (SalesPaymentChartData data, _) => data.dtDate,
+                  yValueMapper: (SalesPaymentChartData data, _) => data.intTotalSale,
+                  pointColorMapper: (SalesPaymentChartData data, _) => Colors.blue,
+                  dataLabelSettings: const DataLabelSettings(isVisible: false,angle: -50),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(05),topLeft: Radius.circular(05)),
+                  emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average)
+              ),
+              ColumnSeries<SalesPaymentChartData, String>(
+                  enableTooltip: true,
+                  name: "Payment",
+                  color: Colors.indigoAccent,
+                  dataSource: dashboard.salesPaymentChartList,
+                  xValueMapper: (SalesPaymentChartData data, _) => data.dtDate,
+                  yValueMapper: (SalesPaymentChartData data, _) => data.intTotalPayment,
+                  pointColorMapper: (SalesPaymentChartData data, _) => Colors.indigoAccent,
+                  dataLabelSettings: const DataLabelSettings(isVisible: false,angle: -50),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(05),topLeft: Radius.circular(05)),
+                  emptyPointSettings: EmptyPointSettings(
+                      mode: EmptyPointMode.average)),
+            ]),
+      );
+    },);
+  }
+}
+
