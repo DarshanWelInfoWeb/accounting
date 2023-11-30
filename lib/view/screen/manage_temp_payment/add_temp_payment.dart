@@ -433,6 +433,7 @@ class _AddTempPaymentState extends State<AddTempPayment> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   focusNode: onlineCode,
+                  cursorColor: ColorResources.LINE_BG,
                   onTap: () {
                     setState(() {
                       // cashController.text!= ""?
@@ -511,6 +512,7 @@ class _AddTempPaymentState extends State<AddTempPayment> {
                   maxLines: 1,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
+                  cursorColor: ColorResources.LINE_BG,
                   focusNode: cashCode,
                   onTap: () {
                     setState(() {

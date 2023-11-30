@@ -858,6 +858,7 @@ class _EditInvoiceState extends State<EditInvoice> {
                           maxLines: 1,
                           focusNode: qtyCode,
                           keyboardType: TextInputType.number,
+                          cursorColor: ColorResources.LINE_BG,
                           textInputAction: TextInputAction.next,
                           onTap: () {
                             setState(() {
@@ -901,6 +902,7 @@ class _EditInvoiceState extends State<EditInvoice> {
                           controller: rateController,
                           maxLines: 1,
                           keyboardType: TextInputType.number,
+                          cursorColor: ColorResources.LINE_BG,
                           textInputAction: TextInputAction.done,
                           focusNode: rateCode,
                           onTap: () {
@@ -1421,6 +1423,7 @@ class _EditInvoiceState extends State<EditInvoice> {
                                 maxLines: 1,
                                 focusNode: discountCode,
                                 keyboardType: TextInputType.number,
+                                cursorColor: ColorResources.LINE_BG,
                                 textInputAction: TextInputAction.done,
                                 onTap: () {
                                   setState(() {

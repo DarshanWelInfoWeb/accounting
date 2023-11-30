@@ -1027,6 +1027,7 @@ class _EditTempInvoiceState extends State<EditTempInvoice> {
                           focusNode: qtyCode,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
+                          cursorColor: ColorResources.LINE_BG,
                           onTap: () {
                             setState(() {
                               total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -1075,6 +1076,7 @@ class _EditTempInvoiceState extends State<EditTempInvoice> {
                           focusNode: rateCode,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
+                          cursorColor: ColorResources.LINE_BG,
                           onTap: () {
                             setState(() {
                               total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -1582,6 +1584,7 @@ class _EditTempInvoiceState extends State<EditTempInvoice> {
                       focusNode: dueAmountCode,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           dueAmountController.text != '' ?

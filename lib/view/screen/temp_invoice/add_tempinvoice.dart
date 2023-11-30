@@ -667,6 +667,7 @@ class _AddTempInvoiceState extends State<AddTempInvoice> {
                           focusNode: qtyCode,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
+                          cursorColor: ColorResources.LINE_BG,
                           onTap: () {
                             setState(() {
                               total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -712,6 +713,7 @@ class _AddTempInvoiceState extends State<AddTempInvoice> {
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
                           focusNode: rateCode,
+                          cursorColor: ColorResources.LINE_BG,
                           onTap: () {
                             setState(() {
                               total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -1248,6 +1250,7 @@ class _AddTempInvoiceState extends State<AddTempInvoice> {
                       focusNode: dueAmountCode,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           dueAmountController.text!=''?
@@ -1326,6 +1329,7 @@ class _AddTempInvoiceState extends State<AddTempInvoice> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       textAlign: TextAlign.start,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           cashController.text!=''?
@@ -1376,6 +1380,7 @@ class _AddTempInvoiceState extends State<AddTempInvoice> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       textAlign: TextAlign.start,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           onlineController.text!=''?

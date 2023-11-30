@@ -409,7 +409,7 @@ class _DashboardState extends State<Dashboard> {
                       onLineChartTapExpand(context, _LineChartWidget("Dashboard"));
                     },
                     child: Container(
-                      height: AppConstants.itemHeight*0.024,
+                      height: AppConstants.itemHeight*0.03,
                       width: AppConstants.itemWidth*0.15,
                       color: Colors.transparent,
                       child: const Padding(
@@ -595,7 +595,7 @@ class _DashboardState extends State<Dashboard> {
                       onBarChartTapExpand(context, _BarChartWidget("Dashboard"));
                     },
                     child: Container(
-                      height: AppConstants.itemHeight*0.024,
+                      height: AppConstants.itemHeight*0.03,
                       width: AppConstants.itemWidth*0.15,
                       color: Colors.transparent,
                       child: const Padding(
@@ -611,7 +611,10 @@ class _DashboardState extends State<Dashboard> {
                 child: SizedBox(height: AppConstants.itemHeight * 0.40, child: _BarChartWidget("Full")),
               ),
               /* Pie Chart*/
-              sale == 0.0 && due == 0.0 && payment == 0.0 ? const SizedBox() :
+              sale == 0.0 && due == 0.0 && payment == 0.0
+                  ?
+              const SizedBox()
+                  :
               Pie_Charts(sale,due,payment),
             ],
           ),

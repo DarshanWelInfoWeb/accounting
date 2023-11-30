@@ -62,6 +62,7 @@ class CustomTextField extends StatelessWidget {
         onFieldSubmitted: (v) {
           FocusScope.of(context).requestFocus(nextNode);
         },
+        cursorColor: ColorResources.LINE_BG,
         style: montserratRegular.copyWith(fontWeight: FontWeight.w600,color: ColorResources.BLACK),
         inputFormatters: [isPhoneNumber ? FilteringTextInputFormatter.digitsOnly : FilteringTextInputFormatter.singleLineFormatter],
         validator: (input){
@@ -136,6 +137,7 @@ class CustomTextFields extends StatelessWidget {
         focusNode: focusNode,
         keyboardType: textInputType ?? TextInputType.text,
         initialValue: null,
+        cursorColor: ColorResources.LINE_BG,
         textInputAction: textInputAction ?? TextInputAction.next,
         onFieldSubmitted: (v) {
           onSubmitted;
@@ -214,6 +216,7 @@ class CustomTextField_GREY_Color extends StatelessWidget {
         focusNode: focusNode,
         keyboardType: textInputType ?? TextInputType.text,
         initialValue: null,
+        cursorColor: ColorResources.LINE_BG,
         textInputAction: textInputAction ?? TextInputAction.next,
         onFieldSubmitted: (v) {
           FocusScope.of(context).requestFocus(nextNode);
@@ -289,6 +292,7 @@ class CustomTextFieldEnabled extends StatelessWidget {
         enabled: false,
         controller: controller,
         maxLines: maxLine ?? 1,
+        cursorColor: ColorResources.LINE_BG,
         textCapitalization: capitalization,
         maxLength: isPhoneNumber ? 10 : null,
         focusNode: focusNode,
@@ -369,6 +373,7 @@ class CustomTextFixWidthFieldEnabled extends StatelessWidget {
         enabled: false,
         controller: controller,
         maxLines: maxLine ?? 1,
+        cursorColor: ColorResources.LINE_BG,
         textCapitalization: capitalization,
         maxLength: isPhoneNumber ? 10 : null,
         focusNode: focusNode,
@@ -451,6 +456,7 @@ class CustomTextField_Pincode extends StatelessWidget {
         focusNode: focusNode,
         keyboardType: TextInputType.number,
         initialValue: null,
+        cursorColor: ColorResources.LINE_BG,
         textInputAction: textInputAction ?? TextInputAction.next,
         onFieldSubmitted: (v) {
           FocusScope.of(context).requestFocus(nextNode);
@@ -525,6 +531,7 @@ class CustomTextField_GREY_ColorEnabled extends StatelessWidget {
         maxLines: maxLine ?? 1,
         textCapitalization: capitalization,
         maxLength: isPhoneNumber ? 10 : null,
+        cursorColor: ColorResources.LINE_BG,
         focusNode: focusNode,
         keyboardType: textInputType ?? TextInputType.text,
         initialValue: null,

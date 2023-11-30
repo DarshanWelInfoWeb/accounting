@@ -396,6 +396,7 @@ class _EditTempPaymentState extends State<EditTempPayment> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   focusNode: onlineCode,
+                  cursorColor: ColorResources.LINE_BG,
                   onTap: () {
                     setState(() {
                       // total_amount = "${int.parse(onlineCodeController.text) + int.parse(cashController.text)}";
@@ -470,6 +471,7 @@ class _EditTempPaymentState extends State<EditTempPayment> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
                   focusNode: cashCode,
+                  cursorColor: ColorResources.LINE_BG,
                   onTap: () {
                     setState(() {
                       // cashController.text!=''?

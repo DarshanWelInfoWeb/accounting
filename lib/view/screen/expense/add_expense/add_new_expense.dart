@@ -587,6 +587,7 @@ class _Add_New_ExpenseState extends State<Add_New_Expense> {
                         print("amount::::${cashController.text}");
                       });
                     },
+                    cursorColor: ColorResources.LINE_BG,
                     style: montserratRegular.copyWith(fontWeight: FontWeight.w600,color: ColorResources.BLACK),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly ,FilteringTextInputFormatter.singleLineFormatter],
                     decoration: InputDecoration(
@@ -631,6 +632,7 @@ class _Add_New_ExpenseState extends State<Add_New_Expense> {
                       print("amount::::${onlineController.text}");
                     });
                   },
+                  cursorColor: ColorResources.LINE_BG,
                   style: montserratRegular.copyWith(fontWeight: FontWeight.w600,color: ColorResources.BLACK),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly ,FilteringTextInputFormatter.singleLineFormatter],
                   decoration: InputDecoration(

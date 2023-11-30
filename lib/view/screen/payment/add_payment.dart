@@ -300,6 +300,7 @@ class _AddPaymentState extends State<AddPayment> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   focusNode: onlineCode,
+                  cursorColor: ColorResources.LINE_BG,
                   onTap: () {
                     setState(() {
                       total_amount = totalController.text;
@@ -357,6 +358,7 @@ class _AddPaymentState extends State<AddPayment> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
                   focusNode: cashCode,
+                  cursorColor: ColorResources.LINE_BG,
                   onTap: () {
                     setState(() {
                       total_amount = totalController.text;

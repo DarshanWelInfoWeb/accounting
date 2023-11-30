@@ -40,7 +40,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
         borderRadius:BorderRadius.circular(10),
       ),
       child: TextFormField(
-        cursorColor: Theme.of(context).primaryColor,
+        cursorColor: ColorResources.LINE_BG,
         controller: widget.controller,
         obscureText: _obscureText,
         focusNode: widget.focusNode,
@@ -104,7 +104,7 @@ class _CustomDateTextFieldState extends State<CustomDateTextField> {
         borderRadius:BorderRadius.circular(10),
       ),
       child: TextFormField(
-        cursorColor: Theme.of(context).primaryColor,
+        cursorColor: ColorResources.LINE_BG,
         controller: widget.controller,
         focusNode: widget.focusNode,
         keyboardType: widget.textInputType ?? TextInputType.text,
@@ -172,7 +172,7 @@ class _CustomDateTextFieldEnableState extends State<CustomDateTextFieldEnable> {
         borderRadius:BorderRadius.circular(10),
       ),
       child: TextFormField(
-        cursorColor: Theme.of(context).primaryColor,
+        cursorColor: ColorResources.LINE_BG,
         controller: widget.controller,
         focusNode: widget.focusNode,
         keyboardType: widget.textInputType ?? TextInputType.text,

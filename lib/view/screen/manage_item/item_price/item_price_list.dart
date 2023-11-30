@@ -108,6 +108,7 @@ class _ItemPriceListState extends State<ItemPriceList> {
                       maxLines: 1,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.search,
+                      cursorColor: ColorResources.LINE_BG,
                       style: montserratRegular.copyWith(fontWeight: FontWeight.w500,color: ColorResources.BLACK,fontSize: 17),
                       enableSuggestions: true,
                       decoration: InputDecoration(
@@ -218,7 +219,7 @@ class _ItemPriceListState extends State<ItemPriceList> {
                         borderRadius:BorderRadius.circular(10),
                       ),
                       child: TextFormField(
-                        cursorColor: Theme.of(context).primaryColor,
+                        cursorColor: ColorResources.LINE_BG,
                         controller: salePriceController,
                         focusNode: salePriceFocusNode,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -253,7 +254,7 @@ class _ItemPriceListState extends State<ItemPriceList> {
                         borderRadius:BorderRadius.circular(10),
                       ),
                       child: TextFormField(
-                        cursorColor: Theme.of(context).primaryColor,
+                        cursorColor: ColorResources.LINE_BG,
                         controller: purchasePriceController,
                         focusNode: purchasePriceFocusNode,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -288,7 +289,7 @@ class _ItemPriceListState extends State<ItemPriceList> {
                         borderRadius:BorderRadius.circular(10),
                       ),
                       child: TextFormField(
-                        cursorColor: Theme.of(context).primaryColor,
+                        cursorColor: ColorResources.LINE_BG,
                         controller: qtyController,
                         focusNode: qtyFocusNode,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),

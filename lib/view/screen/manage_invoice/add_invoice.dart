@@ -349,6 +349,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                             customerController.clear();
                             customerName = "";
                           },
+                          cursorColor: ColorResources.LINE_BG,
                           style: montserratRegular.copyWith(fontWeight: FontWeight.w600,color: customerName==""?ColorResources.GREY:ColorResources.BLACK),
                           decoration: InputDecoration(
                             hintText: customerName ?? 'Select Customer',
@@ -582,6 +583,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                       focusNode: qtyCode,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -626,6 +628,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       focusNode: rateCode,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           total_amount = int.parse(qtyController.text) * int.parse(rateController.text);
@@ -1194,6 +1197,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                             focusNode: discountCode,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
+                            cursorColor: ColorResources.LINE_BG,
                             onTap: () {
                               setState(() {
                                 discountController.text!=''?

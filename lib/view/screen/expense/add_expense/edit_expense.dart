@@ -649,6 +649,7 @@ class _Edit_ExpenseState extends State<Edit_Expense> {
                     maxLines: 1,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
+                    cursorColor: ColorResources.LINE_BG,
                     onChanged: (v) {
                       // FocusScope.of(context).requestFocus(onlineCode);
                       setState(() {
@@ -692,6 +693,7 @@ class _Edit_ExpenseState extends State<Edit_Expense> {
                   controller: cashController,
                   focusNode: cashCode,
                   maxLines: 1,
+                  cursorColor: ColorResources.LINE_BG,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
                   onChanged: (v) {

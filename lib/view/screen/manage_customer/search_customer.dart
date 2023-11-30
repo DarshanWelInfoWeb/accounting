@@ -159,6 +159,7 @@ class _SearchCustomerState extends State<SearchCustomer> with SingleTickerProvid
                       // focusNode: search,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.search,
+                      cursorColor: ColorResources.LINE_BG,
                       maxLength: 10,
                       style: montserratRegular.copyWith(fontWeight: FontWeight.w500,color: ColorResources.BLACK,fontSize: 17),
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly,FilteringTextInputFormatter.singleLineFormatter],

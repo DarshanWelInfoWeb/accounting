@@ -912,6 +912,7 @@ class _EditSupplierInvoiceState extends State<EditSupplierInvoice> {
                         focusNode: qtyCode,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        cursorColor: ColorResources.LINE_BG,
                         onTap: () {
                           setState(() {
                             totalAmount = double.parse(qtyController.text) * int.parse(rateController.text);
@@ -965,6 +966,7 @@ class _EditSupplierInvoiceState extends State<EditSupplierInvoice> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.done,
                         focusNode: rateCode,
+                        cursorColor: ColorResources.LINE_BG,
                         onTap: () {
                           setState(() {
                             totalAmount = double.parse(qtyController.text) * int.parse(rateController.text);
@@ -1685,6 +1687,7 @@ class _EditSupplierInvoiceState extends State<EditSupplierInvoice> {
                       focusNode: discountCode,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
+                      cursorColor: ColorResources.LINE_BG,
                       onTap: () {
                         setState(() {
                           if(includeGST != false){

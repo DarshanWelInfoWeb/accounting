@@ -127,6 +127,7 @@ class _DueBalanceState extends State<DueBalance> {
                   maxLines: 1,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.search,
+                  cursorColor: ColorResources.LINE_BG,
                   style: montserratRegular.copyWith(fontWeight: FontWeight.w500,color: ColorResources.BLACK,fontSize: 17),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search,color: ColorResources.GREY,size: 25),

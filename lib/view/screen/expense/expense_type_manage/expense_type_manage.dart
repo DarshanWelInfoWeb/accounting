@@ -212,6 +212,7 @@ class _ExpenseTypeManageState extends State<ExpenseTypeManage> {
                   maxLines: 1,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.search,
+                  cursorColor: ColorResources.LINE_BG,
                   style: montserratRegular.copyWith(fontWeight: FontWeight.w500,color: ColorResources.BLACK,fontSize: 17),
                   enableSuggestions: true,
                   decoration: InputDecoration(
