@@ -59,7 +59,7 @@ class AuthenticationProvider with ChangeNotifier {
       token==null?"":PreferenceUtils.setString(AppConstants.email,map['data'][0]['Email']);
       token==null?"":PreferenceUtils.setString(AppConstants.companyName,map['data'][0]['CompanyName']).toString();
       token==null?"":PreferenceUtils.setString("${AppConstants.companyId}",map['data'][0]['CompanyId'].toString());
-      token==null?"":PreferenceUtils.setbool("${AppConstants.includeGst}",map['data'][0]['bisIncludeGST']);
+      token==null?"":PreferenceUtils.setbool(AppConstants.includeGst,map['data'][0]['bisIncludeGST']);
       callback(true, msg,token);
       _isLoading = false;
       notifyListeners();
