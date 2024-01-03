@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gas_accounting/data/model/response/editmaininvoice_response.dart';
 import 'package:gas_accounting/data/model/response/maininvopciestock_response.dart';
 import 'package:gas_accounting/helper/preferenceutils.dart';
+import 'package:gas_accounting/provider/customer_provider.dart';
 import 'package:gas_accounting/provider/invoice_provider.dart';
-import 'package:gas_accounting/provider/route_provider.dart';
 import 'package:gas_accounting/provider/supplier_provider.dart';
 import 'package:gas_accounting/utill/app_constants.dart';
 import 'package:gas_accounting/utill/color_resources.dart';
 import 'package:gas_accounting/utill/dimensions.dart';
 import 'package:gas_accounting/utill/styles.dart';
 import 'package:gas_accounting/view/screen/manage_invoice/invoice_list.dart';
-import 'package:gas_accounting/view/screen/manage_invoice/view_invoice.dart';
-import 'package:gas_accounting/view/screen/temp_invoice/tempinvoice_list.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
@@ -37,6 +35,9 @@ class PdfPreviewPageMain extends StatelessWidget {
     double amount = 0.0;
     double taxableAmount = 0.0;
     double calculatedGst,total = 0.0;
+    double dueAmount = 0.0;
+    double dueTotalAmount = 0.0;
+    int customerId = 0;
     bool isLoading = true;
 
     Provider.of<SupplierProvider>(context, listen: false).getSupplierTax(context, "25").then((value){
@@ -66,6 +67,7 @@ class PdfPreviewPageMain extends StatelessWidget {
     Provider.of<InvoiceProvider>(context, listen: false).getMainInvoiceEdit(context,id).then((value) {
       for(int i=0;i<Provider.of<InvoiceProvider>(context, listen: false).editMainInvoiceList.length;i++){
         editMainInvoiceData = Provider.of<InvoiceProvider>(context, listen: false).editMainInvoiceList[i];
+        customerId = Provider.of<InvoiceProvider>(context, listen: false).editMainInvoiceList[i].intcustomerid!;
         totalGstAmount = Provider.of<InvoiceProvider>(context, listen: false).editMainInvoiceList[i].decGrandTotal!;
         discountAmount = Provider.of<InvoiceProvider>(context, listen: false).editMainInvoiceList[i].decDiscount!;
         calculatedGst = totalGstAmount * 9.0 / 100.0;
@@ -87,13 +89,22 @@ class PdfPreviewPageMain extends StatelessWidget {
         title: Text("PDF Preview",style: montserratSemiBold.copyWith(color: ColorResources.WHITE,fontSize: Dimensions.FONT_SIZE_20),),
       ),
       body: Consumer<InvoiceProvider>(builder: (context, invoice, child) {
+        Provider.of<CustomerProvider>(context, listen: false).getCustomerDueReport(context,PreferenceUtils.getString(AppConstants.companyId.toString())).then((value) {
+          for(int i=0;i<Provider.of<CustomerProvider>(context, listen: false).customerDueReportList.length;i++){
+            if(customerId == Provider.of<CustomerProvider>(context, listen: false).customerDueReportList[i].intCustomerid){
+              dueAmount = Provider.of<CustomerProvider>(context, listen: false).customerDueReportList[i].decDueAmount!;
+              // dueTotalAmount = dueAmount + total;
+            }
+            print("due:1 ¥: $dueAmount ::$dueTotalAmount");
+          }
+        });
         return
           isLoading
               ?
           const Center(child: CircularProgressIndicator(color: ColorResources.LINE_BG))
               :
           PdfPreview(
-            build: (context) => makePdfMain(customerName,companyName,address,gstNo,editMainInvoiceData,invoice.mainInvoiceStockList,totalGstAmount,total,cgst,cgstValue,sgstValue,gstValue,discountAmount),
+            build: (context) => makePdfMain(customerName,companyName,address,gstNo,editMainInvoiceData,invoice.mainInvoiceStockList,totalGstAmount,total,cgst,cgstValue,sgstValue,gstValue,discountAmount,dueAmount),
             pdfFileName: 'Invoice',
             initialPageFormat: PdfPageFormat.standard,
             canChangePageFormat: false,
@@ -104,7 +115,7 @@ class PdfPreviewPageMain extends StatelessWidget {
             actions: [
               IconButton(onPressed: () {
                 print("object::1::");
-                makePdfMain(customerName,companyName,address,gstNo,editMainInvoiceData,invoice.mainInvoiceStockList,totalGstAmount,total,cgst,cgstValue,sgstValue,gstValue,discountAmount).then((value) async {
+                makePdfMain(customerName,companyName,address,gstNo,editMainInvoiceData,invoice.mainInvoiceStockList,totalGstAmount,total,cgst,cgstValue,sgstValue,gstValue,discountAmount,dueAmount).then((value) async {
                   print("object:::2:::");
                   final box = context.findRenderObject() as RenderBox?;
                   String link = "http://support.welinfoweb.com/company";
